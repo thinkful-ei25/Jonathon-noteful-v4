@@ -5,9 +5,10 @@ const mongoose = require('mongoose');
 
 const Folder = require('../models/folder');
 const Note = require('../models/note');
-
+const passport = require('passport');
 const router = express.Router();
 
+router.use('/', passport.authenticate('jwt', { session: false, failWithError: true }));
 /* ========== GET/READ ALL ITEMS ========== */
 router.get('/', (req, res, next) => {
 
@@ -123,6 +124,8 @@ router.delete('/:id', (req, res, next) => {
   const folderRemovePromise = Folder.findByIdAndRemove(id);
   // ON DELETE CASCADE equivalent
   // const noteRemovePromise = Note.deleteMany({ folderId: id });
+
+
 
   const noteRemovePromise = Note.updateMany(
     { folderId: id },
