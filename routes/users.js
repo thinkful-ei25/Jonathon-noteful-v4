@@ -6,13 +6,10 @@ const passport = require('passport');
 const User = require('../models/user');
 
 const router = express.Router();
-router.use('/', passport.authenticate('jwt', { session: false, failWithError: true }));
 
 router.post('/', (req, res, next) => {
   const { fullname, username, password } = req.body;
-  const requiredFields = ['fullname', 'username', 'password'];
- 
-
+  const requiredFields = ['username', 'password'];
   let map = {};
   for(let fields in req.body){
     map[fields] = 1;
@@ -22,11 +19,10 @@ router.post('/', (req, res, next) => {
     let field = requiredFields[fields];
     if(map[field] !== 1){
       errorMessage === undefined ? errorMessage = field : errorMessage += ', '  + field;
-      console.log(errorMessage);
     }
   }
   if(errorMessage !== undefined) {
-    const err = new Error(` '${errorMessage}' fields can not be empty`);
+    const err = new Error(`fields: '${errorMessage}' can not be empty`);
     err.status = 422;
     return next(err);
   }
@@ -34,7 +30,7 @@ router.post('/', (req, res, next) => {
   const checkIfStringFields = requiredFields.find(field => field in req.body && typeof req.body[field] !== 'string');
 
   if (checkIfStringFields) {
-    const err = new Error(` '${checkIfStringFields}' must be a string`);
+    const err = new Error(`field: '${checkIfStringFields}' must be a string`);
     err.status = 422;
     return next(err);
   }
@@ -42,7 +38,7 @@ router.post('/', (req, res, next) => {
   const checkIfTrimmed = requiredFields.find(field => req.body[field].trim() !== req.body[field]);
 
   if (checkIfTrimmed) {
-    const err = new Error(` '${checkIfTrimmed} can not have leading or trailing white spaces'`);
+    const err = new Error(`field: '${checkIfTrimmed}' can not have leading or trailing white spaces`);
     err.status = 422;
     return next(err);
   }
@@ -50,7 +46,7 @@ router.post('/', (req, res, next) => {
 
   
   if (username.length < 2){
-    const err = new Error('username must be at least 2 characters long');
+    const err = new Error('field: \'username\' must be at least 2 characters long');
     err.status = 422;
     return next(err);
   }
@@ -69,7 +65,7 @@ router.post('/', (req, res, next) => {
       const newUser = {
         username,
         password: digest,
-        fullname
+        fullname: fullname.trim()
       };
       return User.create(newUser);
     })

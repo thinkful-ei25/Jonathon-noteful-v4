@@ -44,7 +44,7 @@ describe('Noteful API - Folders', function () {
   after(function () {
     return mongoose.disconnect();
   });
-  
+  /*
   describe('GET /api/folders', function () {
 
     it('should return a list sorted with the correct number of folders', function () {
@@ -411,5 +411,5 @@ describe('Noteful API - Folders', function () {
     });
 
   });
-
+*/
 });

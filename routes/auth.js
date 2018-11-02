@@ -12,8 +12,6 @@ const options = {session: false, failWithError: true};
 
 const localAuth = passport.authenticate('local', options);
 
-router.use('/', passport.authenticate('jwt', { session: false, failWithError: true }));
-
 function createAuthToken (user) {
   return jwt.sign({ user }, JWT_SECRET, {
     subject: user.username,
